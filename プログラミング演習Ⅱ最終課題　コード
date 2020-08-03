@@ -1,0 +1,189 @@
+#include<iostream>
+#include<vector>
+#include<string>
+#include<cmath>
+#include<regex>
+using namespace std;
+
+struct Ude {//Udeクラスを定義する
+		double x;
+		double y;
+		double z;
+		
+};
+vector<Ude> a{3};
+struct Kansetu {//Kansetuクラスを定義する
+	string i;
+};
+vector<Kansetu> b{ 2 };
+struct Kakudo {//Kakudoクラスを定義する
+	double j;
+};
+vector<Kakudo> c{ 2 };
+
+void g() {
+	cout << "各腕の初期姿勢でのベクトルを入力してください。" << endl;//各腕の初期姿勢でのベクトルを入力
+	int n = 0;
+	string str;
+	while (n < 3) {
+		int Q = 0;
+		cout << n + 1 << "つ目の腕のｘ軸方向のベクトルを入力してください。"<< endl;
+		do {
+			
+			cin >> str;
+			auto it = str.cbegin();
+			auto itt = str.cend();//イテレーターの利用
+			Q = 0;
+			if (all_of(it, itt, isdigit))Q = 1;
+			else cout << "半角数字以外の文字が入力されました。もう一度正しく" << n + 1 << "つ目の腕のｘ軸方向のベクトルを入力してください。" << endl;
+		} while (Q == 0);
+		double q = stod(str);
+		a[n].x = q;
+		cout << n + 1 << "つ目の腕のy軸方向のベクトルを入力してください。" << endl;
+		do {
+			cin >> str;
+			Q = 0;
+			if (all_of(str.cbegin(), str.cend(), isdigit))Q = 1;
+			else cout << "半角数字以外の文字が入力されました。もう一度正しく" << n + 1 << "つ目の腕のy軸方向のベクトルを入力してください。" << endl;
+		} while (Q == 0);
+		q = stod(str);
+		a[n].y = q;
+		cout << n + 1 << "つ目の腕のz軸方向のベクトルを入力してください。" << endl;
+		do {
+			cin >> str;
+			Q = 0;
+			if (all_of(str.cbegin(), str.cend(), isdigit))Q = 1;
+			else cout << "半角数字以外の文字が入力されました。もう一度正しく" << n + 1 << "つ目の腕のz軸方向のベクトルを入力してください。" << endl;
+		} while (Q == 0);
+		q = stod(str);
+		a[n].z = q;
+		n++;
+	}
+
+
+	do {
+		cout << "第1関節の回転軸の向きを入力してください。(x軸ならx、y軸ならy、z軸ならzを入力)" << endl;//第1関節の回転軸の向きを入力
+
+		cin >> b[0].i;
+		if (!(b[0].i == "x") && !(b[0].i == "y") && !(b[0].i == "z")) {
+			cout << "x,y,z以外の文字が入力されました。もう一度正しく";
+		}
+	} while (!(b[0].i == "x") && !(b[0].i == "y") && !(b[0].i == "z"));
+
+
+
+	do {
+		cout << "第2関節の回転軸の向きを入力してください。(x軸ならx、y軸ならy、z軸ならzを入力)" << endl;//第2関節の回転軸の向きを入力
+
+		cin >> b[1].i;
+		if (!(b[1].i == "x") && !(b[1].i == "y") && !(b[1].i == "z")) {
+			cout << "x,y,z以外の文字が入力されました。もう一度正しく";
+		}
+	} while (!(b[1].i == "x") && !(b[1].i == "y") && !(b[1].i == "z"));
+
+	cout << "各関節の求めたい姿勢の角度を入力してください。(単位は度の数字を入力してください。)" << endl;//各関節の求めたい姿勢の角度を入力
+	int Q = 0;
+	do {
+		cout << "1つ目の関節の求めたい姿勢の角度を入力してください。" << endl;
+		cin >> str;
+		Q = 0;
+		if (all_of(str.cbegin(), str.cend(), isdigit))Q = 1;
+		else cout << "半角数字以外の文字が入力されました。もう一度正しく1つ目の関節の求めたい姿勢の角度を入力してください。" << endl;
+	} while (Q == 0);
+	double q = stod(str);
+	c[0].j = q;
+	cout << "次に2つ目の関節の求めたい姿勢の角度を入力してください。(単位は度の数字を入力してください。)" << endl;
+	do {
+		cin >> str;
+		Q = 0;
+		if (all_of(str.cbegin(), str.cend(), isdigit))Q = 1;
+		else cout << "半角数字以外の文字が入力されました。もう一度正しく2つ目の関節の求めたい姿勢の角度を入力してください。" << endl;
+	} while (Q == 0);
+	 q = stod(str);
+	c[1].j = q;
+}
+
+void f( ) {
+	double I,J;
+	
+	
+   double pi = 3.141592653589793;//円周率の定義
+	
+	vector<double>daiiti{a[0].x,a[0].y,a[0].z };//1つ目の腕のベクトル
+	vector<double>daini{ a[1].x,a[1].y,a[1].z };
+vector<double>dainini;//2つ目の腕のベクトル
+double s = c[0].j;
+I = s / 180 * pi;//入力の[°]を[rad]に変換する
+vector<vector<double>>Rx{ {1,0,0} ,{0,cos(I),(-1) * sin(I)} ,{0,sin(I),cos(I)} };//回転行列の定義
+vector<vector<double>>Ry{ {cos(I),0, sin(I)},{0,1,0} ,{(-1) * sin(I),0,cos(I)} };
+vector<vector<double>>Rz{ {cos(I),(-1) * sin(I),0} ,{sin(I),cos(I),0} ,{0,0,1} };
+
+	if (b[0].i == "x") {
+		dainini.push_back(Rx[0][0] * daini[0]);
+		dainini.push_back((Rx[1][1] * daini[1])+(Rx[1][2] * daini[2]));
+		dainini.push_back((Rx[2][1] * daini[1]) + (Rx[2][2] * daini[2]));
+}
+	if (b[0].i == "y") {
+		dainini.push_back((Ry[0][0] * daini[0]) + (Ry[0][2] * daini[2]));
+		dainini.push_back(Ry[1][1] * daini[1]);
+		dainini.push_back((Ry[2][0] * daini[0]) + (Ry[2][2] * daini[2]));
+	}
+	if (b[0].i == "z") {
+		dainini.push_back((Rz[0][0] * daini[0]) + (Rz[0][1] * daini[1]));
+		dainini.push_back((Rz[1][0] * daini[0]) + (Rz[1][1] * daini[1]));
+		dainini.push_back(Rz[2][2] * daini[2]);
+	}
+
+	double t = c[1].j;
+	J = t / 180 * pi; //入力の[°]を[rad]に変換する
+	vector<vector<double>>Rx2{ {1,0,0} ,{0,cos(J),(-1) * sin(J)} ,{0,sin(J),cos(J)} };//回転行列の定義
+	vector<vector<double>>Ry2{ {cos(J),0, sin(J)},{0,1,0} ,{(-1) * sin(J),0,cos(J)} };
+	vector<vector<double>>Rz2{ {cos(J),(-1) * sin(J),0} ,{sin(J),cos(J),0} ,{0,0,1} };
+
+	
+	vector<double>daisann{ a[2].x,a[2].y,a[2].z };
+	vector<double>daisannsann;
+	if (b[1].i == "x") {
+		daisannsann.push_back(Rx2[0][0] * daisann[0]);
+		daisannsann.push_back((Rx2[1][1] * daisann[1]) + (Rx2[1][2] * daisann[2]));
+		daisannsann.push_back((Rx2[2][1] * daisann[1]) + (Rx2[2][2] * daisann[2]));
+	}
+	if (b[1].i == "y") {
+		daisannsann.push_back((Ry2[0][0] * daisann[0]) + (Ry2[0][2] * daisann[2]));
+		daisannsann.push_back(Ry2[1][1] * daisann[1]);
+		daisannsann.push_back((Ry2[2][0] * daisann[0]) + (Ry2[2][2] * daisann[2]));
+	}
+	if (b[1].i == "z") {
+		daisannsann.push_back((Rz2[0][0] * daisann[0]) + (Rz2[0][1] * daisann[1]));
+		daisannsann.push_back((Rz2[1][0] * daisann[0]) + (Rz2[1][1] * daisann[1]));
+		daisannsann.push_back(Rz2[2][2] * daisann[2]);
+	}
+
+	vector<double>daisannsannsann;//3つ目の腕のベクトル
+	if (b[0].i == "x") {
+		daisannsannsann.push_back(Rx[0][0] * daisannsann[0]);
+		daisannsannsann.push_back((Rx[1][1] * daisannsann[1]) + (Rx[1][2] * daisannsann[2]));
+		daisannsannsann.push_back((Rx[2][1] * daisannsann[1]) + (Rx[2][2] * daisannsann[2]));
+	}
+	if (b[0].i == "y") {
+		daisannsannsann.push_back((Ry[0][0] * daisannsann[0]) + (Ry[0][2] * daisannsann[2]));
+		daisannsannsann.push_back(Ry[1][1] * daisannsann[1]);
+		daisannsannsann.push_back((Ry[2][0] * daisannsann[0]) + (Ry[2][2] * daisannsann[2]));
+	}
+	if (b[0].i == "z") {
+		daisannsannsann.push_back((Rz[0][0] * daisannsann[0]) + (Rz[0][1] * daisannsann[1]));
+		daisannsannsann.push_back((Rz[1][0] * daisannsann[0]) + (Rz[1][1] * daisannsann[1]));
+		daisannsannsann.push_back(Rz[2][2] * daisannsann[2]);
+	}
+
+	vector<double>Answer{daiiti[0] + dainini[0]+ daisannsannsann[0], daiiti[1] + dainini[1] + daisannsannsann[1], daiiti[2] + dainini[2] + daisannsannsann[2], };
+	cout << "指定されたロボットアームの先の座標を表示する。" <<  endl;//計算結果を出力
+	cout <<"ｘ座標："<<Answer[0] << endl;
+	cout << "ｙ座標：" << Answer[1] << endl;
+	cout << "ｚ座標：" << Answer[2] << endl;
+}
+int main() {
+	g();//入力
+	f();//計算と出力
+	}
+
